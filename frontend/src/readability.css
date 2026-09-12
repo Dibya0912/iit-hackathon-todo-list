@@ -1,0 +1,22 @@
+/* Legible secondary text without increasing decorative brand lettering. */
+.brand-mark { flex-shrink: 0; }
+.sidebar .brand small { font-size: 6.5px; }
+.xp-label { letter-spacing: .4px; }
+.hero-metrics span > small { line-height: 1.5; }
+.attribute-tip { line-height: 1.6; }
+.hero-class, .quest-info > span, .section-heading p, .activity-row small { color: #a7b5a9; }
+.hero-portrait > .portrait svg { min-height: 100%; }
+@media (max-width: 800px) {
+  .sidebar { visibility: hidden; }
+  .sidebar.open { visibility: visible; }
+}
+@media (max-width: 600px) {
+  .hero-portrait { width: 104px; }
+  .hero-detail { padding-inline: 12px; }
+  .xp-label { flex-wrap: wrap; gap: 5px; }
+  .hero-metrics span > small { font-size: 10px; }
+  .streak-message { flex-wrap: wrap; }
+  .section-heading { flex-wrap: wrap; }
+  .row-tools .icon-button { min-height: 44px; min-width: 44px; }
+  .hero-detail .eyebrow { letter-spacing: 1px; }
+}
