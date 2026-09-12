@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Debug Spring Boot",
+      "request": "launch",
+      "mainClass": "dev.levelforge.LevelForgeApplication",
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/backend/.env",
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "pwa-chrome",
+      "name": "Debug LevelForge frontend",
+      "request": "launch",
+      "url": "http://127.0.0.1:5173",
+      "webRoot": "${workspaceFolder}/frontend"
+    }
+  ]
+}

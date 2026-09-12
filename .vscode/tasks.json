@@ -1,0 +1,109 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Frontend: dev",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "vite",
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+): (.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "message": 4
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "vite",
+          "endsPattern": "Local:"
+        }
+      }
+    },
+    {
+      "label": "Backend: dev",
+      "type": "shell",
+      "command": "./mvnw spring-boot:run",
+      "windows": {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./run.ps1"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "java",
+        "pattern": {
+          "regexp": "^\\[ERROR\\] (.*):\\[(\\d+),(\\d+)\\] (.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "message": 4
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Scanning for projects",
+          "endsPattern": "Started LevelForgeApplication"
+        }
+      }
+    },
+    {
+      "label": "LevelForge: dev",
+      "dependsOn": [
+        "Frontend: dev",
+        "Backend: dev"
+      ],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    },
+    {
+      "label": "Frontend: build",
+      "type": "shell",
+      "command": "npm run build",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Frontend: lint",
+      "type": "shell",
+      "command": "npm run lint",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Backend: verify",
+      "type": "shell",
+      "command": "./mvnw verify",
+      "windows": {
+        "command": ".\\mvnw.cmd verify"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "LevelForge: build",
+      "dependsOn": [
+        "Frontend: build",
+        "Frontend: lint",
+        "Backend: verify"
+      ],
+      "dependsOrder": "parallel",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}
