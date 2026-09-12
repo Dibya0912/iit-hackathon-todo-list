@@ -26,6 +26,18 @@ class MySqlIntegrationTest {
   public ZoneId getZone(){return ZoneOffset.UTC;} public Clock withZone(ZoneId z){return this;} public Instant instant(){return now;}
  }
  @BeforeEach void resetTime(){clock.now=Instant.parse("2026-03-08T10:00:00Z");}
+ @AfterEach void removeGeneratedAccounts(){
+  String generated="u.email LIKE 'test-%@example.com' OR u.email LIKE 'http-%@example.com'";
+  jdbc.update("DELETE lr FROM leaderboard_rewards lr JOIN users u ON u.id=lr.user_id WHERE "+generated);
+  jdbc.update("DELETE el FROM economy_ledger el JOIN users u ON u.id=el.user_id WHERE "+generated);
+  jdbc.update("DELETE tc FROM task_completions tc JOIN users u ON u.id=tc.user_id WHERE "+generated);
+  jdbc.update("DELETE t FROM tasks t JOIN users u ON u.id=t.user_id WHERE "+generated);
+  jdbc.update("DELETE i FROM inventory i JOIN characters c ON c.id=i.character_id JOIN users u ON u.id=c.user_id WHERE "+generated);
+  jdbc.update("DELETE ad FROM activity_days ad JOIN characters c ON c.id=ad.character_id JOIN users u ON u.id=c.user_id WHERE "+generated);
+  jdbc.update("DELETE ca FROM character_attributes ca JOIN characters c ON c.id=ca.character_id JOIN users u ON u.id=c.user_id WHERE "+generated);
+  jdbc.update("DELETE c FROM characters c JOIN users u ON u.id=c.user_id WHERE "+generated);
+  jdbc.update("DELETE FROM users WHERE email LIKE 'test-%@example.com' OR email LIKE 'http-%@example.com'");
+ }
  String password(){return "Aa9!"+UUID.randomUUID();}
  long user(){return auth.signup(new Signup("Tester","test-"+UUID.randomUUID()+"@example.com",password(),"UTC")).id();}
  Quest quest(long u,Difficulty d,Category c){return game.create(u,new QuestInput("A meaningful task","Description",c,d,null));}
