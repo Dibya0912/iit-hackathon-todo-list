@@ -32,7 +32,7 @@ public class LeaderboardService {
 
     private List<LeaderboardEntry> rankings(Instant week,Instant end,long currentUser){
         String sql="""
-          SELECT u.id,u.display_name,c.avatar,c.total_xp,COALESCE(SUM(tc.xp),0) weekly_xp
+          SELECT u.id,u.display_name,c.avatar,c.total_xp,COALESCE(SUM(tc.leaderboard_xp),0) weekly_xp
           FROM users u JOIN characters c ON c.user_id=u.id
           LEFT JOIN task_completions tc ON tc.user_id=u.id AND tc.completed_at>=? AND tc.completed_at<?
           GROUP BY u.id,u.display_name,c.avatar,c.total_xp ORDER BY weekly_xp DESC,u.id ASC
@@ -56,7 +56,7 @@ public class LeaderboardService {
         Integer done=jdbc.queryForObject("SELECT COUNT(*) FROM leaderboard_weeks WHERE week_start=? AND finalized_at IS NOT NULL",Integer.class,ts(week));
         if(done!=null&&done>0)return;
         String sql="""
-          SELECT u.id,COALESCE(SUM(tc.xp),0) weekly_xp
+          SELECT u.id,COALESCE(SUM(tc.leaderboard_xp),0) weekly_xp
           FROM users u JOIN task_completions tc ON tc.user_id=u.id AND tc.completed_at>=? AND tc.completed_at<?
           GROUP BY u.id HAVING weekly_xp>0 ORDER BY weekly_xp DESC,u.id ASC LIMIT 10
           """;

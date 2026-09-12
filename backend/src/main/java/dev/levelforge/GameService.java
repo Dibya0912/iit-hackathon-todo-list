@@ -49,14 +49,14 @@ public class GameService {
         var result=tasks.findAll(spec,page(p,size,order));return new PageView<>(result.map(Quest::of).getContent(),result.getNumber(),result.getTotalPages(),result.getTotalElements());
     }
     @Transactional(readOnly=true) public Quest quest(long user,long id){return Quest.of(task(user,id));}
-    private void update(Task t,QuestInput input){t.title=input.title().trim();t.description=input.description()==null?"":input.description().trim();t.category=input.category();t.difficulty=input.difficulty();t.dueDate=input.dueDate();t.updatedAt=Instant.now();}
-    public Quest create(long user,QuestInput input){lock(user);Task t=new Task();t.userId=user;update(t,input);return Quest.of(tasks.save(t));}
+    private void update(Task t,QuestInput input){t.title=input.title().trim();t.description=input.description()==null?"":input.description().trim();t.category=input.category();t.difficulty=input.difficulty();t.dueDate=input.dueDate();t.updatedAt=clock.instant();}
+    public Quest create(long user,QuestInput input){lock(user);Task t=new Task();t.userId=user;t.createdAt=clock.instant();update(t,input);return Quest.of(tasks.save(t));}
     public Quest edit(long user,long id,QuestInput input){lock(user);Task t=task(user,id);if(t.completed||t.archived)throw new ApiError(409,"READ_ONLY","Only pending quests can be edited.");update(t,input);return Quest.of(t);}
     public void archive(long user,long id){lock(user);Task t=task(user,id);t.archived=true;t.updatedAt=Instant.now();}
     public CompletionResult complete(long user,long id) {
         // All mutations acquire the character first. This serializes a user's economy across tabs.
         Hero h=lock(user);Task t=task(user,id);
-        if(t.completed)return new CompletionResult(false,0,0,false,view(h));
+        if(t.completed)return new CompletionResult(false,0,0,0,0,false,view(h));
         if(t.archived)throw new ApiError(409,"ARCHIVED","Archived quests cannot be completed.");
         int xp=t.difficulty.xp,gold=t.difficulty.gold,oldLevel=Rules.progress(h.totalXp).level();
         if(h.totalXp>Rules.MAX_XP-xp||h.gold>Rules.MAX_XP-gold)throw new ApiError(409,"PROGRESSION_LIMIT","Your character reached the supported progression limit.");
@@ -74,9 +74,10 @@ public class GameService {
         }
         h.lastActivityAt=now;t.completed=true;t.completedAt=now;t.updatedAt=now;h.totalXp+=xp;h.gold+=gold;
         Attribute attr=attributes.findByCharacterId(h.id).stream().filter(a->a.type.equals(t.category.attribute())).findFirst().orElseThrow();attr.xp+=xp;
-        Completion c=new Completion();c.taskId=t.id;c.userId=user;c.title=t.title;c.category=t.category.name();c.xp=xp;c.gold=gold;c.completedAt=now;c.localDate=today;c.timezone=h.timezone;completions.save(c);
+        long elapsed=Math.max(0,Duration.between(t.createdAt,now).toSeconds());int leaderboardXp=Rules.leaderboardXp(xp,elapsed);
+        Completion c=new Completion();c.taskId=t.id;c.userId=user;c.title=t.title;c.category=t.category.name();c.xp=xp;c.gold=gold;c.durationSeconds=elapsed;c.leaderboardXp=leaderboardXp;c.completedAt=now;c.localDate=today;c.timezone=h.timezone;completions.save(c);
         ledger(user,"QUEST",t.title,xp,gold,t.id,null);
-        return new CompletionResult(true,xp,gold,Rules.progress(h.totalXp).level()>oldLevel,view(h));
+        return new CompletionResult(true,xp,gold,leaderboardXp,elapsed,Rules.progress(h.totalXp).level()>oldLevel,view(h));
     }
     private void ledger(long user,String kind,String description,long xp,long gold,Long task,Long item){Ledger l=new Ledger();l.userId=user;l.kind=kind;l.description=description;l.xp=xp;l.gold=gold;l.taskId=task;l.itemId=item;ledgers.save(l);}
     @Transactional(readOnly=true) public List<ItemView> shop(long user){return catalog(heroes.findByUserId(user).orElseThrow(ApiError::missing));}

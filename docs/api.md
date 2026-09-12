@@ -78,7 +78,7 @@ type Activity = {
 type PageView<T> = { content: T[]; page: number; totalPages: number; totalElements: number }
 ```
 
-Timestamps are server UTC ISO-8601 strings. Due dates are dates, not instants. Requesting a completion twice returns `applied:false`, zero new reward, and current state. Purchasing an owned item returns `applied:false`.
+Timestamps are server UTC ISO-8601 strings. Due dates are dates, not instants. A successful completion also returns `leaderboardXp` and `elapsedSeconds`; completions under 300 seconds receive zero leaderboard XP. Requesting a completion twice returns `applied:false`, zero new reward, and current state. Purchasing an owned item returns `applied:false`.
 
 The completion snapshot stores the original title, category, XP, Gold, completion timestamp, resolved activity date, and zone. The ledger retains quest reward and purchase deltas.
 

@@ -62,6 +62,7 @@ public final class Models {
         @Column(length=120) public String title;
         @Column(length=20) public String category;
         public int xp; public int gold;
+        public long durationSeconds; public int leaderboardXp;
         public Instant completedAt;
         public LocalDate localDate;
         @Column(length=80) public String timezone;

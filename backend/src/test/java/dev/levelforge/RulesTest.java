@@ -3,6 +3,12 @@ import org.junit.jupiter.api.Test;
 import java.time.*;
 import static org.junit.jupiter.api.Assertions.*;
 class RulesTest {
+ @Test void leaderboardRejectsInstantCompletionAndCapsTimeBonus(){
+  assertEquals(0,Rules.leaderboardXp(10,299));
+  assertEquals(15,Rules.leaderboardXp(10,300));
+  assertEquals(20,Rules.leaderboardXp(10,3600));
+  assertEquals(100,Rules.leaderboardXp(50,7200));
+ }
  @Test void thresholdsAndOverflow() {
   long[] thresholds={0,100,300,600,1000};
   for(int i=0;i<thresholds.length;i++){var p=Rules.progress(thresholds[i]);assertEquals(i+1,p.level());assertEquals(0,p.current());assertEquals(100*(i+1),p.required());}

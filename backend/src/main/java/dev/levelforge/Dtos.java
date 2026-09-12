@@ -15,7 +15,7 @@ public final class Dtos {
     public record AttributeView(String type,Rules.Progress progress) {}
     public record ItemView(long id,String name,String slot,String appearance,String description,int price,Long inventoryId,boolean owned,boolean equipped) {}
     public record HeroView(String displayName,String avatar,Rules.Progress progress,long gold,int streak,int bestStreak,String timezone,String pendingTimezone,List<AttributeView> attributes,List<ItemView> cosmetics) {}
-    public record CompletionResult(boolean applied,int xp,int gold,boolean levelUp,HeroView character) {}
+    public record CompletionResult(boolean applied,int xp,int gold,int leaderboardXp,long elapsedSeconds,boolean levelUp,HeroView character) {}
     public record PurchaseResult(boolean applied,HeroView character) {}
     public record Activity(long id,String kind,String description,long xp,long gold,Instant createdAt) {}
     public record LeaderboardEntry(int rank,long userId,String displayName,String avatar,Rules.Progress progress,long weeklyXp,boolean currentUser,int projectedRewardXp) {}

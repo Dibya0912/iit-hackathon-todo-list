@@ -18,6 +18,10 @@ public final class Rules {
     public static int visibleStreak(LocalDate last,LocalDate today,int streak) {
         return last==null || last.plusDays(1).isBefore(today)?0:streak;
     }
+    public static int leaderboardXp(int difficultyXp,long elapsedSeconds) {
+        if(elapsedSeconds<300)return 0;
+        return difficultyXp+(int)Math.min(difficultyXp,(elapsedSeconds/300)*5);
+    }
     public static ZoneId zone(String value) {
         if(value==null || !ZoneId.getAvailableZoneIds().contains(value)) throw new ApiError(400,"INVALID_TIMEZONE","Choose a valid IANA timezone.");
         return ZoneId.of(value);

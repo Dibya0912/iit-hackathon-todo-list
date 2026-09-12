@@ -66,12 +66,12 @@ class MySqlIntegrationTest {
   List<Long> players=new ArrayList<>();
   for(int i=0;i<11;i++)players.add(user());
   leaderboard.leaderboard(players.get(0),0,50);
-  for(long player:players)game.complete(player,quest(player,Difficulty.EASY,Category.STUDY).id());
+  for(long player:players){var q=quest(player,Difficulty.EASY,Category.STUDY);clock.now=clock.now.plusSeconds(300);game.complete(player,q.id());}
   var before=leaderboard.leaderboard(players.get(10),0,50);
   assertEquals(11,before.currentUser().rank());
-  game.complete(players.get(10),quest(players.get(10),Difficulty.EASY,Category.STUDY).id());
+  var comeback=quest(players.get(10),Difficulty.EASY,Category.STUDY);clock.now=clock.now.plusSeconds(300);game.complete(players.get(10),comeback.id());
   var after=leaderboard.leaderboard(players.get(10),0,50);
-  assertEquals(1,after.currentUser().rank());assertEquals(20,after.currentUser().weeklyXp());assertEquals(1000,after.currentUser().projectedRewardXp());
+  assertEquals(1,after.currentUser().rank());assertEquals(30,after.currentUser().weeklyXp());assertEquals(1000,after.currentUser().projectedRewardXp());
   clock.now=week.plusSeconds(7*86400L+1);
   leaderboard.leaderboard(players.get(10),0,50);leaderboard.leaderboard(players.get(10),0,50);
   assertEquals(10,jdbc.queryForObject("SELECT COUNT(*) FROM leaderboard_rewards WHERE week_start=?",Integer.class,java.sql.Timestamp.from(week)));
