@@ -1,0 +1,12 @@
+node_modules/
+dist/
+target/
+.env
+.env.*
+!.env.example
+*.log
+.runtime/
+scaffold.zip
+playwright-report/
+test-results/
+*.tsbuildinfo
