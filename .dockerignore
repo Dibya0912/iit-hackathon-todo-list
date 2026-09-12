@@ -1,0 +1,8 @@
+.git
+.runtime
+.vercel
+backend/.env
+backend/target
+frontend/dist
+frontend/node_modules
+*.log

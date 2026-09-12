@@ -242,6 +242,10 @@ docker compose --profile full up --build -d
 
 This serves the frontend and same-origin API at [local Compose endpoint](http://127.0.0.1:8088), with MySQL in a named volume. Do not run `docker compose down -v` unless intentionally deleting this database.
 
+### Vercel
+
+The root `Dockerfile.vercel` builds the Vite client into Spring Boot's static resources and deploys the complete same-origin application as one Vercel container. Configure `DB_URL`, `DB_USER`, `DB_PASSWORD`, and `COOKIE_SECURE=true` against a persistent MySQL-compatible cloud database. Import the repository root in Vercel; do not select only the `frontend` directory.
+
 For production: provision a host capable of running Java/containers and persistent MySQL; terminate HTTPS at your load balancer; route to Nginx; set `COOKIE_SECURE=true`; keep Java/MySQL private; configure credentials and backups; run migrations; add edge rate limiting. Nginx serves the Vite build and proxies `/api/` to the backend. A missing DB prevents successful application startup; `GET /api/health` returns readiness only and uses status 503 if a running application's DB becomes unavailable. No secret details are returned.
 
 The container setup is prepared but was not executed because Docker is unavailable here. No hosting credentials, domain, or deployment target were supplied, so no public deployment is claimed.
