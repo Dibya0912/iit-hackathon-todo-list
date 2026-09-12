@@ -15,7 +15,7 @@ class Client {
   }
 }
 const a=new Client(), b=new Client(), outsider=new Client()
-const email='api-'+randomUUID()+'@example.com',password='Aa9!'+randomUUID()+randomUUID()
+const email='api-'+randomUUID()+'@example.com',password='Aa9!'+randomUUID()
 await a.request('/character','GET',undefined,401)
 await a.request('/auth/signup','POST',{displayName:'API tester',email,password,timezone:'UTC'},403,false)
 await a.request('/auth/csrf')

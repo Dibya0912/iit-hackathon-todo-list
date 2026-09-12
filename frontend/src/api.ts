@@ -5,6 +5,8 @@ export interface Hero { displayName: string; avatar: string; progress: Progress;
 export interface Quest { id: number; title: string; description: string; category: string; difficulty: string; dueDate: string | null; completed: boolean; archived: boolean; createdAt: string; updatedAt: string; completedAt: string | null; rewardXp: number; rewardGold: number }
 export interface Activity { id: number; kind: string; description: string; xp: number; gold: number; createdAt: string }
 export interface Page<T> { content: T[]; page: number; totalPages: number; totalElements: number }
+export interface LeaderboardEntry { rank:number; userId:number; displayName:string; avatar:string; progress:Progress; weeklyXp:number; currentUser:boolean; projectedRewardXp:number }
+export interface Leaderboard { weekStart:string; weekEnd:string; secondsRemaining:number; rankings:Page<LeaderboardEntry>; currentUser:LeaderboardEntry }
 export class ApiError extends Error {
   status: number; fields: Record<string,string>
   constructor(status: number, message: string, fields: Record<string,string> = {}) { super(message); this.status=status; this.fields=fields }

@@ -6,9 +6,15 @@
 .attribute-tip { line-height: 1.6; }
 .hero-class, .quest-info > span, .section-heading p, .activity-row small { color: #a7b5a9; }
 .hero-portrait > .portrait svg { min-height: 100%; }
+.season-clock,.your-rank{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.025)}
+.season-clock div,.your-rank{display:flex;flex-direction:column}.season-clock small,.your-rank small,.weekly-score small{font-size:9px;letter-spacing:1.4px;color:#91a096}.season-clock strong{font-family:var(--display);font-size:17px;color:var(--gold)}
+.reward-strip{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 22px;margin-bottom:22px}.reward-strip>div:first-child{display:flex;align-items:center;gap:14px}.reward-strip svg{color:var(--gold)}.reward-strip span{display:flex;flex-direction:column}.reward-strip small{color:#a7b5a9;margin-top:3px}.reward-chips{display:flex;flex-direction:row!important;gap:8px;flex-wrap:wrap}.reward-chips span{display:block;padding:7px 10px;background:rgba(224,179,91,.09);border:1px solid rgba(224,179,91,.18);border-radius:999px;font-size:11px}.reward-chips b{color:var(--gold)}
+.podium{display:grid;grid-template-columns:repeat(3,1fr);align-items:end;gap:14px;margin-bottom:22px}.podium-card{text-align:center;padding:20px 14px}.podium-card.place-1{padding-top:30px;border-color:rgba(224,179,91,.45);box-shadow:0 0 32px rgba(224,179,91,.08)}.podium-card .portrait{margin:8px auto;width:94px;height:104px}.podium-card h2{margin:6px 0 0}.podium-card p{margin:2px 0;color:#a7b5a9}.podium-card>strong{display:block;color:var(--gold);font-size:20px;margin-top:10px}.podium-card>small{color:#91a096}.podium-rank{display:inline-flex;align-items:center;gap:6px;color:var(--gold);font-weight:800}
+.ranking-panel{padding:22px}.your-rank{display:grid;grid-template-columns:auto auto;column-gap:10px}.your-rank small{grid-column:1/-1}.your-rank strong{font-size:20px;color:var(--gold)}.your-rank span{align-self:center;color:#a7b5a9;font-size:12px}.rank-list{margin-top:14px}.rank-row{display:grid;grid-template-columns:62px 50px minmax(0,1fr) 90px 100px;gap:12px;align-items:center;min-height:72px;padding:10px 12px;border-top:1px solid var(--border)}.rank-row.is-you{background:rgba(55,194,171,.07);box-shadow:inset 3px 0 var(--teal)}.rank-row.top-ten .rank-number{color:var(--gold)}.rank-number{display:flex;gap:5px;align-items:center;font-family:var(--display);font-size:16px}.rank-row .portrait{width:46px;height:50px}.rank-person{min-width:0}.rank-person strong{display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rank-person em{font-style:normal;font-size:8px;letter-spacing:1px;color:var(--teal);border:1px solid rgba(55,194,171,.35);border-radius:4px;padding:2px 5px}.rank-person small{display:block;color:#91a096;margin-top:4px}.weekly-score{display:flex;flex-direction:column;align-items:flex-end}.weekly-score strong{font-size:18px}.bonus{text-align:right;color:#65716a;font-size:11px}.bonus.active{color:var(--gold)}
 @media (max-width: 800px) {
   .sidebar { visibility: hidden; }
   .sidebar.open { visibility: visible; }
+  .reward-strip{align-items:flex-start;flex-direction:column}.rank-row{grid-template-columns:52px 44px minmax(0,1fr) 75px}.rank-row .bonus{display:none}
 }
 @media (max-width: 600px) {
   .hero-portrait { width: 104px; }
@@ -19,4 +25,5 @@
   .section-heading { flex-wrap: wrap; }
   .row-tools .icon-button { min-height: 44px; min-width: 44px; }
   .hero-detail .eyebrow { letter-spacing: 1px; }
+  .podium{grid-template-columns:1fr}.podium-card{padding:14px!important;display:grid;grid-template-columns:65px 1fr auto;text-align:left;align-items:center}.podium-card .portrait{grid-row:1/5;width:58px;height:64px;margin:0}.podium-card .podium-rank,.podium-card h2,.podium-card p,.podium-card>strong,.podium-card>small{grid-column:2}.podium-card>strong{grid-column:3;grid-row:2;text-align:right;margin:0}.podium-card>small{grid-column:3;grid-row:3;font-size:9px}.rank-row{grid-template-columns:43px 40px minmax(0,1fr) 58px;padding-inline:5px;gap:7px}.rank-row .portrait{width:38px;height:42px}.rank-person small{font-size:9px}.weekly-score strong{font-size:15px}.ranking-panel{padding:14px}.season-clock{width:100%;justify-content:center}
 }

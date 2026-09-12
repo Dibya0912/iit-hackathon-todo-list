@@ -19,14 +19,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class MySqlIntegrationTest {
  @org.springframework.beans.factory.annotation.Value("${local.server.port}") int port;
  @Autowired tools.jackson.databind.json.JsonMapper json;
- @Autowired AuthService auth; @Autowired GameService game; @Autowired JdbcTemplate jdbc; @Autowired TestClock clock;
+ @Autowired AuthService auth; @Autowired GameService game; @Autowired LeaderboardService leaderboard; @Autowired JdbcTemplate jdbc; @Autowired TestClock clock;
  @TestConfiguration static class TimeConfig { @Bean @Primary TestClock testClock(){return new TestClock();} }
  static class TestClock extends Clock {
   volatile Instant now=Instant.parse("2026-03-08T10:00:00Z");
   public ZoneId getZone(){return ZoneOffset.UTC;} public Clock withZone(ZoneId z){return this;} public Instant instant(){return now;}
  }
  @BeforeEach void resetTime(){clock.now=Instant.parse("2026-03-08T10:00:00Z");}
- String password(){return "Aa9!"+UUID.randomUUID()+UUID.randomUUID();}
+ String password(){return "Aa9!"+UUID.randomUUID();}
  long user(){return auth.signup(new Signup("Tester","test-"+UUID.randomUUID()+"@example.com",password(),"UTC")).id();}
  Quest quest(long u,Difficulty d,Category c){return game.create(u,new QuestInput("A meaningful task","Description",c,d,null));}
  <T> List<T> concurrent(Callable<T> action) throws Exception {
@@ -47,6 +47,24 @@ class MySqlIntegrationTest {
   assertEquals(1,game.activity(u,0,50).totalElements());
   game.archive(u,q.id());assertFalse(game.complete(u,q.id()).applied());
   assertThrows(ApiError.class,()->game.edit(u,q.id(),new QuestInput("Changed","",Category.STUDY,Difficulty.EASY,null)));
+ }
+ @Test void weeklyLeaderboardReranksAndAwardsExactlyOnce() {
+  LocalDateTime latest=jdbc.queryForObject("SELECT COALESCE(MAX(week_start),'2039-12-19 00:00:00') FROM leaderboard_weeks",LocalDateTime.class);
+  Instant week=latest.plusWeeks(2).toInstant(ZoneOffset.UTC);clock.now=week.plusSeconds(36000);
+  List<Long> players=new ArrayList<>();
+  for(int i=0;i<11;i++)players.add(user());
+  leaderboard.leaderboard(players.get(0),0,50);
+  for(long player:players)game.complete(player,quest(player,Difficulty.EASY,Category.STUDY).id());
+  var before=leaderboard.leaderboard(players.get(10),0,50);
+  assertEquals(11,before.currentUser().rank());
+  game.complete(players.get(10),quest(players.get(10),Difficulty.EASY,Category.STUDY).id());
+  var after=leaderboard.leaderboard(players.get(10),0,50);
+  assertEquals(1,after.currentUser().rank());assertEquals(20,after.currentUser().weeklyXp());assertEquals(1000,after.currentUser().projectedRewardXp());
+  clock.now=week.plusSeconds(7*86400L+1);
+  leaderboard.leaderboard(players.get(10),0,50);leaderboard.leaderboard(players.get(10),0,50);
+  assertEquals(10,jdbc.queryForObject("SELECT COUNT(*) FROM leaderboard_rewards WHERE week_start=?",Integer.class,java.sql.Timestamp.from(week)));
+  assertEquals(1,jdbc.queryForObject("SELECT COUNT(*) FROM economy_ledger WHERE user_id=? AND kind='LEADERBOARD'",Integer.class,players.get(10)));
+  assertEquals(1020,game.character(players.get(10)).progress().total());
  }
  @Test void ownershipAndEquipDenial() {
   long u=user(),other=user();var q=quest(u,Difficulty.EASY,Category.READING);

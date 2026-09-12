@@ -27,6 +27,7 @@ All paths begin with `/api`. Requests/responses use JSON except successful 204 r
 | GET /tasks/{id} | Owned quest ID | Quest |
 | PATCH /tasks/{id} | QuestInput; pending only | Quest |
 | DELETE /tasks/{id} | Owned quest ID | 204; archives |
+| GET /leaderboard?page=0&size=25 | — | Current UTC week, countdown, paged global rankings, and current user's rank |
 | POST /tasks/{id}/complete | No client reward/timestamp | CompletionResult |
 | GET /shop | None | ItemView[] |
 | POST /shop/{id}/purchase | No client price | PurchaseResult |

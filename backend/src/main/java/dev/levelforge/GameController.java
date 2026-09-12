@@ -9,8 +9,8 @@ import javax.sql.DataSource;
 import java.util.*;
 @RestController @RequestMapping("/api")
 public class GameController {
-    private final GameService game; private final DataSource db;
-    GameController(GameService game,DataSource db){this.game=game;this.db=db;}
+    private final GameService game; private final LeaderboardService leaderboard; private final DataSource db;
+    GameController(GameService game,LeaderboardService leaderboard,DataSource db){this.game=game;this.leaderboard=leaderboard;this.db=db;}
     private long user(Authentication a){return Long.parseLong(a.getName());}
     @GetMapping("/health") ResponseEntity<Map<String,String>> health(){try(var c=db.getConnection()){return ResponseEntity.status(c.isValid(2)?200:503).body(Map.of("status",c.isValid(2)?"ready":"unavailable"));}catch(Exception e){return ResponseEntity.status(503).body(Map.of("status","unavailable"));}}
     @GetMapping("/character") HeroView character(Authentication a){return game.character(user(a));}
@@ -20,7 +20,8 @@ public class GameController {
     @GetMapping("/tasks/{id}") Quest quest(Authentication a,@PathVariable long id){return game.quest(user(a),id);}
     @PatchMapping("/tasks/{id}") Quest edit(Authentication a,@PathVariable long id,@Valid @RequestBody QuestInput q){return game.edit(user(a),id,q);}
     @DeleteMapping("/tasks/{id}") @ResponseStatus(HttpStatus.NO_CONTENT) void archive(Authentication a,@PathVariable long id){game.archive(user(a),id);}
-    @PostMapping("/tasks/{id}/complete") CompletionResult complete(Authentication a,@PathVariable long id){return game.complete(user(a),id);}
+    @PostMapping("/tasks/{id}/complete") CompletionResult complete(Authentication a,@PathVariable long id){leaderboard.prepareForCompletion();return game.complete(user(a),id);}
+    @GetMapping("/leaderboard") LeaderboardView leaderboard(Authentication a,@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="25") int size){return leaderboard.leaderboard(user(a),page,size);}
     @GetMapping("/shop") List<ItemView> shop(Authentication a){return game.shop(user(a));}
     @PostMapping("/shop/{id}/purchase") PurchaseResult buy(Authentication a,@PathVariable long id){return game.purchase(user(a),id);}
     @GetMapping("/inventory") List<ItemView> inventory(Authentication a){return game.inventory(user(a));}

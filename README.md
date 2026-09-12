@@ -1,6 +1,6 @@
 # LevelForge
 
-A Life RPG for turning everyday intentions into character progression. Create a quest, complete the activity, earn XP and Gold, grow five attributes, and collect visible cosmetics.
+A Life RPG for turning everyday intentions into character progression. Create a quest, complete the activity, earn XP and Gold, grow five attributes, climb the weekly leaderboard, and collect visible cosmetics.
 
 ## What is implemented
 
@@ -147,6 +147,8 @@ Flyway V1 creates the normalized application and Spring Session JDBC tables. V2 
 
 Every signup creates one level-1 character, zero XP/Gold/attributes/streak, Ranger avatar, and default appearance. There are no fake dashboard metrics or automatic completed demo quests. Tests create uniquely named accounts and actual transactions, isolated from normal signup.
 
+The shared leaderboard lists every registered adventurer and ranks the current Monday-to-Monday UTC week by XP earned from completed quests. Rankings refresh every 15 seconds. After the week closes, qualifying places receive one server-side award: #1 gets 1000 XP, #2 gets 500 XP, #3 gets 200 XP, and #4–#10 get 100 XP each. Zero-score accounts remain visible but do not receive a prize. Higher quest XP immediately moves a player ahead; equal scores use the older account as a stable tie-break. Awards are recorded once in `leaderboard_rewards` and the economy ledger.
+
 ## Build and test
 
 ```powershell
@@ -254,4 +256,4 @@ Repository: [Dibya0912/iit-hackathon-todo-list](https://github.com/Dibya0912/iit
 
 ## Known limits
 
-One-time quests only. No password recovery or email verification, recurring quests, payments, social features, or multiplayer. Basic local throttling needs a deployment-level replacement at scale. Java serialization in JDBC sessions may require session invalidation when upgrading incompatible application/security versions. Full device/screen-reader coverage and production HTTPS/container execution remain deployment follow-ups. Check the verification record for precisely what ran.
+One-time quests only. No password recovery or email verification, recurring quests, payments, direct messaging, or teams. Basic local throttling needs a deployment-level replacement at scale. Java serialization in JDBC sessions may require session invalidation when upgrading incompatible application/security versions. Full device/screen-reader coverage and production HTTPS/container execution remain deployment follow-ups. Check the verification record for precisely what ran.
