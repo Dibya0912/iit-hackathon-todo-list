@@ -71,7 +71,7 @@ class MySqlIntegrationTest {
   assertEquals(11,before.currentUser().rank());
   var comeback=quest(players.get(10),Difficulty.EASY,Category.STUDY);clock.now=clock.now.plusSeconds(300);game.complete(players.get(10),comeback.id());
   var after=leaderboard.leaderboard(players.get(10),0,50);
-  assertEquals(1,after.currentUser().rank());assertEquals(30,after.currentUser().weeklyXp());assertEquals(1000,after.currentUser().projectedRewardXp());
+  assertEquals(1,after.currentUser().rank());assertEquals(26,after.currentUser().weeklyXp());assertEquals(1000,after.currentUser().projectedRewardXp());
   clock.now=week.plusSeconds(7*86400L+1);
   leaderboard.leaderboard(players.get(10),0,50);leaderboard.leaderboard(players.get(10),0,50);
   assertEquals(10,jdbc.queryForObject("SELECT COUNT(*) FROM leaderboard_rewards WHERE week_start=?",Integer.class,java.sql.Timestamp.from(week)));
@@ -127,7 +127,8 @@ class MySqlIntegrationTest {
   long u=user();for(var c:Category.values())game.complete(u,quest(u,Difficulty.MEDIUM,c).id());
   var h=game.character(u);assertEquals(150,h.progress().total());assertEquals(50,h.progress().current());
   for(var a:h.attributes())assertEquals(a.type().equals("INTELLECT")?50:25,a.progress().total());
-  assertEquals(2,game.activity(u,0,2).content().size());assertEquals(3,game.activity(u,0,2).totalPages());
+  var history=game.activity(u,0,2);assertEquals(2,history.content().size());assertEquals(3,history.totalPages());
+  assertNotNull(history.content().getFirst().questCreatedAt());assertNotNull(history.content().getFirst().completedAt());assertEquals(0,history.content().getFirst().leaderboardXp());
   assertEquals(6,game.quests(u,"completed",null,"newest",0,50).totalElements());
  }
  @Test void httpSessionExpiryCsrfAndPersistence() throws Exception {

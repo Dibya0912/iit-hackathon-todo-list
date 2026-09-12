@@ -97,6 +97,9 @@ public class GameService {
     }
     @Transactional(readOnly=true) public PageView<Activity> activity(long user,int p,int size) {
         var result=ledgers.findByUserId(user,page(p,size,Sort.by("id").descending()));
-        return new PageView<>(result.map(l->new Activity(l.id,l.kind,l.description,l.xp,l.gold,l.createdAt)).getContent(),result.getNumber(),result.getTotalPages(),result.getTotalElements());
+        Set<Long> ids=new HashSet<>();result.forEach(l->{if(l.taskId!=null)ids.add(l.taskId);});
+        Map<Long,Task> taskMap=new HashMap<>();tasks.findAllById(ids).forEach(t->taskMap.put(t.id,t));
+        Map<Long,Completion> completionMap=new HashMap<>();completions.findByTaskIdIn(ids).forEach(c->completionMap.put(c.taskId,c));
+        return new PageView<>(result.map(l->{Task t=l.taskId==null?null:taskMap.get(l.taskId);Completion c=l.taskId==null?null:completionMap.get(l.taskId);return new Activity(l.id,l.kind,l.description,l.xp,l.gold,l.createdAt,l.taskId,t==null?null:t.createdAt,c==null?null:c.completedAt,c==null?null:c.durationSeconds,c==null?null:c.leaderboardXp);}).getContent(),result.getNumber(),result.getTotalPages(),result.getTotalElements());
     }
 }

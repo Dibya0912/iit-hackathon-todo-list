@@ -14,7 +14,7 @@ public final class Repositories {
     }
     public interface Attributes extends JpaRepository<Attribute,Long> { List<Attribute> findByCharacterId(Long id); }
     public interface Tasks extends JpaRepository<Task,Long>, JpaSpecificationExecutor<Task> { Optional<Task> findByIdAndUserId(Long id,Long userId); }
-    public interface Completions extends JpaRepository<Completion,Long> {}
+    public interface Completions extends JpaRepository<Completion,Long> { List<Completion> findByTaskIdIn(Collection<Long> ids); }
     public interface Days extends JpaRepository<ActivityDay,Long> {}
     public interface Items extends JpaRepository<Item,Long> {}
     public interface Inventory extends JpaRepository<Owned,Long> { List<Owned> findByCharacterId(Long id); Optional<Owned> findByCharacterIdAndItemId(Long characterId,Long itemId); }

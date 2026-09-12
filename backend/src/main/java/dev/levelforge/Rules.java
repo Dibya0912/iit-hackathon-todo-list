@@ -20,7 +20,10 @@ public final class Rules {
     }
     public static int leaderboardXp(int difficultyXp,long elapsedSeconds) {
         if(elapsedSeconds<300)return 0;
-        return difficultyXp+(int)Math.min(difficultyXp,(elapsedSeconds/300)*5);
+        if(elapsedSeconds<600)return (int)Math.ceil(difficultyXp*1.25);
+        if(elapsedSeconds<1800)return (int)Math.ceil(difficultyXp*1.50);
+        if(elapsedSeconds<3600)return (int)Math.ceil(difficultyXp*1.75);
+        return difficultyXp*2;
     }
     public static ZoneId zone(String value) {
         if(value==null || !ZoneId.getAvailableZoneIds().contains(value)) throw new ApiError(400,"INVALID_TIMEZONE","Choose a valid IANA timezone.");

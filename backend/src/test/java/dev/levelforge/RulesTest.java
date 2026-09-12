@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class RulesTest {
  @Test void leaderboardRejectsInstantCompletionAndCapsTimeBonus(){
   assertEquals(0,Rules.leaderboardXp(10,299));
-  assertEquals(15,Rules.leaderboardXp(10,300));
+  assertEquals(13,Rules.leaderboardXp(10,300));
+  assertEquals(15,Rules.leaderboardXp(10,600));
+  assertEquals(18,Rules.leaderboardXp(10,1800));
   assertEquals(20,Rules.leaderboardXp(10,3600));
   assertEquals(100,Rules.leaderboardXp(50,7200));
  }

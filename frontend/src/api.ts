@@ -3,7 +3,7 @@ export interface Progress { level: number; current: number; required: number; to
 export interface Item { id: number; name: string; slot: string; appearance: string; description: string; price: number; inventoryId: number | null; owned: boolean; equipped: boolean }
 export interface Hero { displayName: string; avatar: string; progress: Progress; gold: number; streak: number; bestStreak: number; timezone: string; pendingTimezone: string | null; attributes: { type: string; progress: Progress }[]; cosmetics: Item[] }
 export interface Quest { id: number; title: string; description: string; category: string; difficulty: string; dueDate: string | null; completed: boolean; archived: boolean; createdAt: string; updatedAt: string; completedAt: string | null; rewardXp: number; rewardGold: number }
-export interface Activity { id: number; kind: string; description: string; xp: number; gold: number; createdAt: string }
+export interface Activity { id:number; kind:string; description:string; xp:number; gold:number; createdAt:string; taskId:number|null; questCreatedAt:string|null; completedAt:string|null; durationSeconds:number|null; leaderboardXp:number|null }
 export interface Page<T> { content: T[]; page: number; totalPages: number; totalElements: number }
 export interface LeaderboardEntry { rank:number; userId:number; displayName:string; avatar:string; progress:Progress; weeklyXp:number; currentUser:boolean; projectedRewardXp:number }
 export interface Leaderboard { weekStart:string; weekEnd:string; secondsRemaining:number; rankings:Page<LeaderboardEntry>; currentUser:LeaderboardEntry }
